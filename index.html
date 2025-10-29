@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fox Search</title>
-
-  <!-- Firefox OpenSearch desteği -->
-  <link rel="search" type="application/opensearchdescription+xml"
-        title="Fox Search"
-        href="./opensearch.xml">
+  <title>🦊 Fox Search</title>
+  <link rel="icon" type="image/x-icon" href="https://th.bing.com/th/id/R.693a606fc5fe145633c661e5ed94aed0?rik=Rm18WD7o55LmOg&pid=ImgRaw&r=0">
 
   <style>
+    :root {
+      --accent: #ff7b00;
+      --accent-hover: #ffa94d;
+      --dark-bg: #1b1b1b;
+      --dark-text: #ffff;
+      --light-bg: #f6f6f6;
+      --light-text: #000000;
+    }
+
     body {
-      background: #1b1b1b;
-      color: #fff;
+      background: var(--dark-bg);
+      color: var(--dark-text);
       font-family: "Poppins", sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    body.light {
+      background: var(--light-bg);
+      color: var(--light-text);
     }
 
     .container {
@@ -29,9 +40,10 @@
     .logo {
       font-size: 48px;
       font-weight: 700;
-      color: #ff7b00;
+      color: var(--accent);
       margin-bottom: 40px;
       text-shadow: 0 0 12px rgba(255, 123, 0, 0.6);
+      transition: 0.3s;
     }
 
     form {
@@ -44,22 +56,22 @@
     input[type="text"] {
       width: 320px;
       padding: 10px 14px;
-      border: 2px solid #ff7b00;
+      border: 2px solid var(--accent);
       border-radius: 30px;
-      background: #2c2c2c;
-      color: #fff;
+      background: transparent;
+      color: inherit;
       font-size: 16px;
       outline: none;
       transition: 0.3s;
     }
 
     input[type="text"]:focus {
-      border-color: #ffa94d;
-      box-shadow: 0 0 10px #ff7b00;
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 10px var(--accent);
     }
 
     button {
-      background: #ff7b00;
+      background: var(--accent);
       border: none;
       color: #fff;
       font-size: 16px;
@@ -70,7 +82,7 @@
     }
 
     button:hover {
-      background: #ffa94d;
+      background: var(--accent-hover);
       transform: scale(1.05);
     }
 
@@ -78,6 +90,11 @@
       margin-top: 60px;
       font-size: 13px;
       color: #aaa;
+      transition: color 0.3s;
+    }
+
+    body.light footer {
+      color: #555;
     }
 
     input::placeholder {
@@ -89,9 +106,37 @@
     input:focus::placeholder {
       color: #ffb766;
     }
+
+    /* Tema düğmesi */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent-hover);
+    }
+
+    .theme-toggle span {
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" id="themeToggle"><span>🌙</span> Dark Mode</button>
+
   <div class="container">
     <div class="logo">🦊 Fox Search</div>
 
@@ -101,15 +146,16 @@
     </form>
 
     <footer>
-      <p>© 2025 Fox Search | Powered by Google</p>
+      <p>© 2025<a href="https://yigitat.github.io/me/" Yiğit Alp</a> | Powered by Google</p>
     </footer>
   </div>
 
   <script>
     const input = document.getElementById("searchInput");
     const form = document.getElementById("searchForm");
+    const toggleBtn = document.getElementById("themeToggle");
 
-    // 🔸 Arama işlemi
+    // 🔸 Form ile Google'da arama
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const query = input.value.trim();
@@ -119,13 +165,11 @@
       }
     });
 
-    // 🔸 Typing effect (placeholder animasyonu)
+    // 🔸 Typing effect
     const phrases = [
-      "Google'da ara...",
+      "Fox Search ile ara...",
       "Kod bul...",
-      "Haber oku...",
-      "Yeni fikir keşfet...",
-      "Fox Search ile dene!"
+      "Haber oku..."
     ];
 
     let currentPhrase = 0;
@@ -154,7 +198,7 @@
       setTimeout(typeEffect, speed);
     }
 
-    // 🔸 URL'den ?q= parametresini alıp direkt arama yap
+    // 🔸 URL parametresi desteği
     const params = new URLSearchParams(window.location.search);
     const q = params.get("q");
     if (q) {
@@ -162,6 +206,26 @@
     } else {
       typeEffect();
     }
+
+    // 🔸 Tema geçişi
+    function applyTheme(theme) {
+      if (theme === "light") {
+        document.body.classList.add("light");
+        toggleBtn.innerHTML = '<span>☀️</span>';
+      } else {
+        document.body.classList.remove("light");
+        toggleBtn.innerHTML = '<span>🌙</span>';
+      }
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    applyTheme(savedTheme);
+
+    toggleBtn.addEventListener("click", () => {
+      const newTheme = document.body.classList.contains("light") ? "dark" : "light";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    });
   </script>
 </body>
 </html>
