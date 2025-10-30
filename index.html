@@ -193,7 +193,7 @@
       e.preventDefault();
       const query = input.value.trim();
       if (query) {
-        const googleURL = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        const googleURL = `https://www.google.com/search?q=${encodeURIComponent(query)} target="_blank"`;
         window.location.href = googleURL;
       }
     });
@@ -262,4 +262,5 @@
   </script>
 </body>
 </html>
+
 
